@@ -2,6 +2,7 @@ package com.example.gads
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gads.Services.ApiService
@@ -19,21 +20,6 @@ class SublmitActivity : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener { view -> onBackPressed() }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        projectSubmission()
-    }
-
-    fun projectSubmission(){
-        var firstName = first_name.text.toString()
-        var lastName = last_name.text.toString()
-        var email = email.toString()
-        var link = github_link.toString()
-
-        val serviceBuilder = ServiceBuilder.buildService(ApiService::class.java)
-
         submission.setOnClickListener {
             val mDialogueView= LayoutInflater.from(this)
                 .inflate(R.layout.control_panel, null)
@@ -41,10 +27,30 @@ class SublmitActivity : AppCompatActivity() {
 
             mDialogueView.ok_button.setOnClickListener {
                 mBuilder.dismiss()
-                val requestCall = serviceBuilder.submitProject(
+                projectSubmission()
+            }
+
+            mDialogueView.imageView2.setOnClickListener {
+                mBuilder.dismiss()
+            }
+        }
+
+
+    }
+
+
+
+    fun projectSubmission(){
+        var firstName = first_name.text.toString()
+        var lastName = last_name.text.toString()
+        var email = email.text.toString()
+        var link = github_link.text.toString()
+
+        val serviceBuilder = ServiceBuilder.buildService(ApiService::class.java)
+        val requestCall = serviceBuilder.submitProject(
+                    email,
                     firstName,
                     lastName,
-                    email,
                     link)
                 requestCall.enqueue(object : Callback<Void>{
                     override fun onFailure(call: Call<Void>, t: Throwable) {
@@ -56,22 +62,19 @@ class SublmitActivity : AppCompatActivity() {
 
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         if(response.isSuccessful){
+
                             val mDialogue = LayoutInflater.from(this@SublmitActivity).
                             inflate(R.layout.success_panel, null)
                             val mBuilder = AlertDialog.Builder(this@SublmitActivity).
                             setView(mDialogue).show()
-                        }
+                        }else
+                            Toast.makeText(this@SublmitActivity, "see the response: ${response}", Toast.LENGTH_LONG).show()
 
 
                     }
 
                 })
-            }
 
-            mDialogueView.imageView2.setOnClickListener {
-                mBuilder.dismiss()
-            }
-        }
 
     }
 

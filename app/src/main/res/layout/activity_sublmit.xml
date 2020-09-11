@@ -117,7 +117,7 @@
         android:layout_weight="1"
         android:background="@drawable/forms"
         android:ems="10"
-        android:inputType="textUri"
+        android:inputType="textPersonName"
         android:hint="  Project on GITHUB (link)"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
